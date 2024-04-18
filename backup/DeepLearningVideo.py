@@ -5,7 +5,7 @@ from ultralytics import YOLO
 model = YOLO('yolov8n.pt')
 
 # Open the video file
-video_path = "機器人製作課堂活動.mp4"
+video_path = "..\\test.mp4"
 cap = cv2.VideoCapture(video_path)
 
 # Loop through the video frames

@@ -1,19 +1,29 @@
-import cv2
-import numpy as np
-import pygetwindow as gw
-from PIL import ImageGrab
+# train model
+# from ultralytics import YOLO
 
-def screen_capture():
-    screen = gw.getWindowsWithTitle('工作管理員')[0]
-    screen_box = screen.box
-    screen_img = ImageGrab.grab(bbox=screen_box)
-    
+# model = YOLO("yolov8n.pt")  # load a pretrained YOLOv8n model
+# model.train(data="C:\\Users\\kevin\\OneDrive\\桌面\\helloworld\\py\\apex-1\\data.yaml", epochs=300)  # train the model
+# model.val()  # evaluate model performance on the validation set
+# model.export()  # export the model to ONNX format
 
-    
-    screen_np = np.array(screen_img)
-    screen_np = cv2.cvtColor(screen_np, cv2.COLOR_BGR2RGB)
-    return screen_np
+from ultralytics import YOLO
 
-cv2.imshow('Screen Capture Detection', screen_capture())
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+
+model = YOLO('best.engine')
+
+video_path = "C:\\Users\\kevin\\OneDrive\\桌面\\helloworld\\py\\csgo\\test\\images"
+
+model(source=video_path, conf=0.1, save=True)
+
+
+
+# export tensorrt
+# from ultralytics import YOLO
+
+# model = YOLO("best.pt")
+# model.export(format="engine", device=0)
+
+# import keyboard
+
+# print(keyboard.read_key())
+# YOLO predict model=best.engine mode=predict source=1713352659.png

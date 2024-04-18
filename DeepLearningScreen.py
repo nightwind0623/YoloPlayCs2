@@ -7,10 +7,9 @@ from ultralytics import YOLO
 from SendInput import Mouse
 import pyautogui
 
-model = YOLO('yolov8n.pt')
 
 def screen_capture():
-    screen = gw.getWindowsWithTitle('工作管理員')[0]
+    screen = gw.getWindowsWithTitle('VALORANT')[0]
     screen_box = screen.box
     screen_img = ImageGrab.grab(bbox=screen_box)
     
@@ -20,9 +19,12 @@ def screen_capture():
     screen_np = cv2.cvtColor(screen_np, cv2.COLOR_BGR2RGB)
     return screen_np
 
+
+model = YOLO('yolov8n.engine')
 i = 0
 
 while True:
+    
     screen_np = screen_capture()
 
     results = model(screen_np)
@@ -34,9 +36,9 @@ while True:
         print(box.data)
         if class_index == 0: 
             print("Human detected")
-            Mouse.move(int((bbox[0] + bbox[2])/2 - pyautogui.position()[0]), int((bbox[1] + bbox[3])/2 - pyautogui.position()[1] +100), False)
+            Mouse.move(int((bbox[0] + bbox[2])/2 - pyautogui.position()[0]), int((bbox[1] + bbox[3])/2 - pyautogui.position()[1]), False)
             
-    if i > 480:
+    if i > 100000:
         break
     i += 1
     #         cv2.rectangle(screen_np, (bbox[0], bbox[1]), (bbox[2], bbox[3]), (255, 0, 0), 2)
