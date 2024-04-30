@@ -17,37 +17,40 @@ def screen_capture():
     screen_np = cv2.cvtColor(screen_np, cv2.COLOR_BGR2RGB)
     return screen_np
 
+def calc_mid(a, b):
+    return int((a + b) / 2)
 
 model = YOLO('./ModelWeights/F3.engine')
-i = 0
-cv2.namedWindow("main")    
 
 while True:
-    
-    screen = screen_capture()
 
-    results = model(screen)
+    if keyboard.is_pressed("p") == True:
+        screen = screen_capture()
+        
+        results = model(screen, conf=0.7)
 
-    for box in results[0].boxes:
-        class_index = int(box.cls)  
-        confidence = float(box.conf)  
-        bbox = [int(box.xyxy[0][0]), int(box.xyxy[0][1]), int(box.xyxy[0][2]), int(box.xyxy[0][3])]  
-        print(box.data)
-        if keyboard.is_pressed("p") == True:
-            if class_index == 0: 
-                print("head detected")
-                Mouse.move(int((bbox[0] + bbox[2])/2 - pyautogui.position()[0]), int((bbox[1] + bbox[3])/2 - pyautogui.position()[1]), False)
-            elif class_index == 1: 
-                print("person detected")
-                Mouse.move(int((bbox[0] + bbox[2])/2 - pyautogui.position()[0]), int((bbox[1] + bbox[3])/2 - pyautogui.position()[1]), False)
+        enemy_closest = [4852801] # 0:distance, 1:dx, 2:dy
+        head_closest = [4852801]
+        for box in results[0].boxes:
+            class_index = int(box.cls)   # confidence = float(box.conf)  
+            bbox = [int(box.xyxy[0][0]), int(box.xyxy[0][1]), int(box.xyxy[0][2]), int(box.xyxy[0][3])]  
             
-        # cv2.rectangle(screen, (bbox[0], bbox[1]), (bbox[2], bbox[3]), (255, 0, 0), 2)
-        # cv2.putText(screen, f'{results[0].names[class_index]} {confidence:.2f}', (bbox[0], bbox[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
+            mouse_x, mouse_y = pyautogui.position()[0], pyautogui.position()[1]
+            x_mid, y_mid = calc_mid(bbox[0], bbox[2]), calc_mid(bbox[1], bbox[3])
+            distance = (x_mid - mouse_x)**2 + (y_mid - mouse_y)**2
             
-    if i > 100000:
-        break
-    i += 1
-    cv2.imshow('main', results[0].plot())
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-cv2.destroyAllWindows()
+            if class_index == 0 and distance < head_closest[0]: 
+                head_closest = [distance, x_mid, y_mid]
+            elif class_index == 1 and distance < enemy_closest[0]: 
+                enemy_closest = [distance, x_mid, y_mid]
+        if head_closest != [4852801]:
+            Mouse.move(head_closest[1] - mouse_x, head_closest[2] - mouse_y, False)
+        elif enemy_closest !=[4852801]:
+            Mouse.move(enemy_closest[1] - mouse_x, enemy_closest[2] - mouse_y, False)
+            
+            
+            
+#     cv2.imshow('main', results[0].plot())
+#     if cv2.waitKey(1) & 0xFF == ord('q'):
+#         break
+# cv2.destroyAllWindows()
