@@ -1,2 +1,2 @@
-Only for personal studies purposes
-\n Environment required: cuDNN CUDA TensorRT
+Only for personal studies purposes.
+Environment required: cuDNN CUDA TensorRT
