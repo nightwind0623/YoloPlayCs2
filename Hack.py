@@ -4,7 +4,7 @@ import numpy as np
 import pygetwindow as gw
 from PIL import ImageGrab
 from ultralytics import YOLO
-from SendInput import Mouse
+from Lib.SendInput import Mouse
 import pyautogui
 import keyboard
 
