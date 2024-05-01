@@ -1,1 +1,1 @@
-Only for studies purposes
+Only for personal studies purposes
