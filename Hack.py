@@ -21,16 +21,14 @@ def calc_mid(a, b):
     return int((a + b) / 2)
 
 model = YOLO('./ModelWeights/F3.engine')
-
 while True:
 
     if keyboard.is_pressed("p") == True:
         screen = screen_capture()
         
         results = model(screen, conf=0.7)
-
-        enemy_closest = [4852801] # 0:distance, 1:dx, 2:dy
-        head_closest = [4852801]
+        enemy_closest = [float('inf')] # 0:distance, 1:dx, 2:dy
+        head_closest = [float('inf')]
         for box in results[0].boxes:
             class_index = int(box.cls)   # confidence = float(box.conf)  
             bbox = [int(box.xyxy[0][0]), int(box.xyxy[0][1]), int(box.xyxy[0][2]), int(box.xyxy[0][3])]  
@@ -43,14 +41,14 @@ while True:
                 head_closest = [distance, x_mid, y_mid]
             elif class_index == 1 and distance < enemy_closest[0]: 
                 enemy_closest = [distance, x_mid, y_mid]
-        if head_closest != [4852801]:
+        if head_closest != [float('inf')]:
             Mouse.move(head_closest[1] - mouse_x, head_closest[2] - mouse_y, False)
-        elif enemy_closest !=[4852801]:
+        elif enemy_closest !=[float('inf')]:
             Mouse.move(enemy_closest[1] - mouse_x, enemy_closest[2] - mouse_y, False)
             
             
-            
-#     cv2.imshow('main', results[0].plot())
-#     if cv2.waitKey(1) & 0xFF == ord('q'):
-#         break
-# cv2.destroyAllWindows()
+        cv2.imshow('main', results[0].plot())
+        cv2.moveWindow("main",960,0)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+cv2.destroyAllWindows()
